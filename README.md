@@ -1,6 +1,6 @@
 forms-runner-acceptance-tests
 
-The template to create a service that runs WDIO tests against an environment.
+The template to create a service that runs Playwright journey tests against an environment.
 
 - [Local](#local)
   - [Requirements](#requirements)
@@ -19,7 +19,7 @@ The template to create a service that runs WDIO tests against an environment.
 
 #### Node.js
 
-Please install [Node.js](http://nodejs.org/) `>= v20` and [npm](https://nodejs.org/) `>= v9`. You will find it
+Please install [Node.js](http://nodejs.org/) `>= v22.13.1` and [npm](https://nodejs.org/) `>= v10`. You will find it
 easier to use the Node Version Manager [nvm](https://github.com/creationix/nvm)
 
 To use the correct version of Node.js for this application, via nvm:
@@ -38,16 +38,16 @@ npm install
 
 ### Running local tests
 
-Start application you are testing on the url specified in `baseUrl` [wdio.local.conf.js](wdio.local.conf.js)
+Start the applications you are testing on the URLs configured in `.env` / `.env.sample`, then run:
 
 ```bash
-npm run test:local
+npm test
 ```
 
 ### Debugging local tests
 
 ```bash
-npm run test:local:debug
+npx playwright test --debug
 ```
 
 ## Production
@@ -67,7 +67,9 @@ The results of the test run are made available in the portal.
 
 2. The Dockerfile's entrypoint script should return exit code of 0 if the test suite passes or 1/>0 if it fails
 
-3. Test reports should be published to S3 using the script in `./bin/publish-tests.sh`
+3. Test reports should be published to S3 using the script in `./bin/publish-tests.sh`. The current runtime publishes the Playwright HTML report from `playwright-report/`.
+
+4. Because the suite now runs Playwright inside the built container, the Docker image installs the Chromium browser during build so the CDP runtime can execute the tests directly.
 
 ## Running on GitHub
 
@@ -79,18 +81,16 @@ Steps:
 
 1. Edit the compose.yml to include your services.
 2. Modify the scripts in docker/scripts to pre-populate the database, if required and create any localstack resources.
-3. Test the setup locally with `docker compose up` and `npm run test:github`
-4. Set up the workflow trigger in `.github/workflows/journey-tests`.
+3. Test the setup locally with `docker compose up` and `npm test`
+4. Use `.github/workflows/journey-tests.yml`, which calls the local `./run-journey-tests` composite action and uploads the generated `playwright-report` artifact.
 
 By default, the provided workflow will run when triggered manually from GitHub or when triggered by another workflow.
 
 If you want to use the repository exclusively for running docker composed based test suites consider displaying the publish.yml workflow.
 
-## BrowserStack
+## Legacy WDIO files
 
-Two wdio configuration files are provided to help run the tests using BrowserStack in both a GitHub workflow (`wdio.github.browserstack.conf.js`) and from the CDP Portal (`wdio.browserstack.conf.js`).
-They can be run from npm using the `npm run test:browserstack` (for running via portal) and `npm run test:github:browserstack` (from GitHib runner).
-See the CDP Documentation for more details.
+Some WDIO and BrowserStack configuration files are still present in the repository from the previous test setup, but the current Docker, GitHub workflow, and S3 report publishing flow use Playwright and the HTML report in `playwright-report/`.
 
 ## Licence
 
