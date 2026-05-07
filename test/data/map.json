@@ -1,0 +1,44 @@
+{
+  "name": "Automated test - Playwright map form 0.22024399",
+  "engine": "V2",
+  "schema": 2,
+  "startPage": "/summary",
+  "pages": [
+    {
+      "title": "",
+      "path": "/add-all-the-barn-locations",
+      "components": [
+        {
+          "type": "GeospatialField",
+          "title": "Add all the barn locations",
+          "name": "tHYIXp",
+          "shortDescription": "Add all barn locations on a map",
+          "hint": "You can add points, shapes or lines to the map.",
+          "options": {
+            "required": true
+          },
+          "schema": {},
+          "id": "a5acb63f-42b0-4333-9e89-53db28e49119"
+        }
+      ],
+      "next": [],
+      "id": "5e664f1a-5f51-40c2-9084-5801ac652279"
+    },
+    {
+      "id": "449a45f6-4541-4a46-91bd-8b8931b07b50",
+      "title": "",
+      "path": "/summary",
+      "controller": "SummaryPageWithConfirmationEmailController",
+      "next": []
+    }
+  ],
+  "conditions": [],
+  "sections": [],
+  "lists": [],
+  "metadata": {
+    "$$__formVersion": {
+      "versionNumber": 13,
+      "createdAt": "2026-04-24T10:30:19.766Z"
+    }
+  }
+}

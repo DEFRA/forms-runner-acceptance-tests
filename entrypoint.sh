@@ -1,7 +1,9 @@
 #!/bin/sh
 
 echo "run_id: $RUN_ID"
+
 npm test
+test_exit_code=$?
 
 npm run report:publish
 publish_exit_code=$?
@@ -11,11 +13,10 @@ if [ $publish_exit_code -ne 0 ]; then
   exit $publish_exit_code
 fi
 
-# At the end of the test run, if the suite has failed we write a file called 'FAILED'
-if [ -f FAILED ]; then
+# Exit with the test status after the report has been published.
+if [ $test_exit_code -ne 0 ]; then
   echo "test suite failed"
-  cat ./FAILED
-  exit 1
+  exit $test_exit_code
 fi
 
 echo "test suite passed"

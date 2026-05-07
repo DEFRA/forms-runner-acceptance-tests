@@ -1,53 +1,52 @@
 name: Run Journey Tests on GitHub
+description: Run the Docker Compose-backed Playwright journey tests and upload the HTML report.
 
 inputs:
   example-node-backend:
+    description: Optional backend image override for Docker Compose.
     required: false
-    type: string
   example-node-frontend:
+    description: Optional frontend image override for Docker Compose.
     required: false
-    type: string
 
 runs:
-  using: "composite"
+  using: 'composite'
   steps:
     - uses: actions/checkout@v4
-      with:
-        repository: DEFRA/cdp-node-journey-test-suite-template
 
     - name: Docker Login
       uses: DEFRA/cdp-build-action/docker-login@main
 
     - uses: actions/setup-node@v4
       with:
-        node-version: 20
+        node-version-file: .nvmrc
         cache: npm
     - name: Setup the tests
-      run: npm i
+      run: npm ci
       shell: bash
     - name: Start docker compose
       shell: bash
       run: |
-          CDP_EXAMPLE_NODE_FRONTEND=${{inputs.example-node-frontend}} \
-          CDP_EXAMPLE_NODE_BACKEND=${{inputs.example-node-backend}} \
-          docker compose up --wait-timeout 300 -d --quiet-pull
+        CDP_EXAMPLE_NODE_FRONTEND=${{inputs.example-node-frontend}} \
+        CDP_EXAMPLE_NODE_BACKEND=${{inputs.example-node-backend}} \
+        docker compose up --wait-timeout 300 -d --quiet-pull
     - name: Run the tests
       shell: bash
       run: |
-        npm run test:github
-        npm run report
+        npm test
     - name: debug
       if: always()
       run: |
         docker compose logs > logs.txt
         docker ps
       shell: bash
-    - name: Upload allure report
+    - name: Upload Playwright report
       if: always()
       uses: actions/upload-artifact@v4
       with:
-        name: allure-report
-        path: ./allure-report
+        name: playwright-report
+        path: ./playwright-report
+        if-no-files-found: warn
     - name: Upload docker compose logs
       if: always()
       uses: actions/upload-artifact@v4
