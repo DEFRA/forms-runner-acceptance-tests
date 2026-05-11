@@ -66,9 +66,24 @@ const isSummaryPage = (controller) => summaryControllers.has(controller)
  * @returns {Promise<void>}
  */
 async function clickSummarySubmitButton(page, pageDef) {
-  const buttonNames = [summarySubmitButtonText(pageDef), 'Submit']
+  const submitActionButton = page.locator(
+    'button[name="action"][value="send"], input[type="submit"][name="action"][value="send"]'
+  )
 
-  for (const buttonName of buttonNames) {
+  if ((await submitActionButton.count()) > 0) {
+    await submitActionButton.first().click({ noWaitAfter: true })
+    return
+  }
+
+  const buttonNames = [
+    summarySubmitButtonText(pageDef),
+    'Accept and submit',
+    'Accept and send',
+    'Submit',
+    'Send'
+  ]
+
+  for (const buttonName of new Set(buttonNames)) {
     const button = page.getByRole('button', { name: buttonName })
     if ((await button.count()) > 0) {
       await button.click({ noWaitAfter: true })

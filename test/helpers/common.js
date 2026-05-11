@@ -90,18 +90,12 @@ export function extractPathFromUrl(url, formSlug, previewMode) {
 }
 
 /**
- * Submit button text for SummaryPageWithConfirmationEmailController.
+ * Submit button text used by runner summary pages.
+ * Summary pages with declaration or custom components render an "Accept and submit" button,
+ * otherwise the default summary button text is "Submit".
  * @param {object} summaryPageDef Summary page definition from form JSON.
  * @returns {string} Submit button text.
  */
 export function summarySubmitButtonText(summaryPageDef) {
-  if (
-    summaryPageDef?.components?.some(
-      (component) => component.type === 'Markdown'
-    )
-  ) {
-    return 'Accept and send'
-  }
-
-  return 'Send'
+  return summaryPageDef?.components?.length ? 'Accept and submit' : 'Submit'
 }

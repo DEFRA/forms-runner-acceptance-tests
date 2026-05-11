@@ -219,9 +219,24 @@ async function continueWithoutErrors(page) {
  * @returns {Promise<void>}
  */
 async function clickSummarySubmitButton(page, pageDef) {
-  const buttonNames = [summarySubmitButtonText(pageDef), 'Submit']
+  const submitActionButton = page.locator(
+    'button[name="action"][value="send"], input[type="submit"][name="action"][value="send"]'
+  )
 
-  for (const buttonName of buttonNames) {
+  if ((await submitActionButton.count()) > 0) {
+    await submitActionButton.first().click({ noWaitAfter: true })
+    return
+  }
+
+  const buttonNames = [
+    summarySubmitButtonText(pageDef),
+    'Accept and submit',
+    'Accept and send',
+    'Submit',
+    'Send'
+  ]
+
+  for (const buttonName of new Set(buttonNames)) {
     const button = page.getByRole('button', { name: buttonName })
     if ((await button.count()) > 0) {
       await button.click({ noWaitAfter: true })
@@ -232,6 +247,43 @@ async function clickSummarySubmitButton(page, pageDef) {
   throw new Error(
     `No summary submit button found for page ${pageDef.path}. Tried: ${buttonNames.join(', ')}`
   )
+}
+
+/**
+ * Wait for a successful summary submission to either change the URL or render the confirmation page.
+ * @param {Page} page Playwright page.
+ * @param {string} urlBeforeSubmit URL before clicking submit.
+ * @returns {Promise<{ newUrl: string, confirmationVisible: boolean }>} Submission result details.
+ */
+async function waitForSummarySubmission(page, urlBeforeSubmit) {
+  const confirmationHeading = page.getByRole('heading', {
+    name: 'Form submitted'
+  })
+
+  try {
+    await Promise.any([
+      page
+        .waitForURL((url) => url.toString() !== urlBeforeSubmit, {
+          timeout: 15000
+        })
+        .then(() => 'url-changed'),
+      confirmationHeading.waitFor({ state: 'visible', timeout: 15000 })
+    ])
+  } catch {
+    return { newUrl: page.url(), confirmationVisible: false }
+  }
+
+  const confirmationVisible = await confirmationHeading
+    .isVisible()
+    .catch(() => false)
+
+  if (confirmationVisible) {
+    await expect(
+      page.getByRole('heading', { name: 'What happens next' })
+    ).toBeVisible()
+  }
+
+  return { newUrl: page.url(), confirmationVisible }
 }
 
 /**
@@ -306,13 +358,22 @@ async function handleSummaryPage({
 
   const urlBeforeSubmit = page.url()
   await clickSummarySubmitButton(page, pageDef)
-  await page.waitForLoadState('networkidle')
+  const { newUrl, confirmationVisible } = await waitForSummarySubmission(
+    page,
+    urlBeforeSubmit
+  )
 
-  const newUrl = page.url()
-  if (newUrl === urlBeforeSubmit) {
+  if (newUrl === urlBeforeSubmit && !confirmationVisible) {
     throw new Error(
       `Submitting summary page ${pageDef.path} for ${executionLabel} form ${formName} did not navigate away from the page`
     )
+  }
+
+  if (newUrl === urlBeforeSubmit && confirmationVisible) {
+    test.info().annotations.push({
+      type: 'info',
+      description: `Submission for ${executionLabel} form ${formName} rendered the confirmation page without changing the URL`
+    })
   }
 
   pushTrackedUrl(newUrl, slug, previewMode, currentPath, navigationStack)
