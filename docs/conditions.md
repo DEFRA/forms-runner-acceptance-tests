@@ -21,7 +21,7 @@ Form JSON contains conditions under `conditions[]`:
 
 ## Mapping layer
 
-Condition mapping is implemented in `src/helpers/components-mapper.js`:
+Condition mapping is implemented in `test/helpers/components-mapper.js`:
 
 - `ConditionMapper.CONDITION_MAP` maps operator strings to classes.
   - Supported operators include:
@@ -44,7 +44,7 @@ Tests should treat both shapes as valid. A common pattern is:
 
 ## Condition classes
 
-Condition classes live in `src/conditions/conditions.js`.
+Condition classes live in individual files under `test/conditions/` and are re-exported from `test/conditions/index.js`.
 
 Each class is designed to be a pure data object with computed properties.
 
@@ -64,13 +64,25 @@ Supports these `type` values:
   - `nonTriggerValue` = a different numeric value (value + 1)
 
 - `BooleanValue`
+
   - `triggerValue` = boolean value
   - `nonTriggerValue` = opposite boolean
 
-### Numeric threshold operators
+- `DateValue`
+  - `triggerValue` = date as `[day, month, year]`
+  - `nonTriggerValue` = a nearby non-matching date as `[day, month, year]`
 
-`IsMoreThanCondition`, `IsLessThanCondition`, `IsAtLeastCondition`, `IsAtMostCondition` support numeric comparisons.
+### `IsNotCondition`
 
+`IsNotCondition` supports the same value types as `IsCondition`, but inverts the trigger/non-trigger behaviour.
+
+### Threshold operators
+
+`IsMoreThanCondition`, `IsLessThanCondition`, `IsAtLeastCondition`, and `IsAtMostCondition` support threshold comparisons.
+
+- `IsMoreThanCondition` and `IsLessThanCondition` support `NumberValue`, `DateValue`, and `RelativeDate`.
+- `IsAtLeastCondition` and `IsAtMostCondition` support `NumberValue` and `RelativeDate`.
+- Relative-date helpers in `test/conditions/relative-date-utils.js` convert comparisons into `DatePartsField`-friendly values.
 - `triggerValue` is chosen to satisfy the inequality.
 - `nonTriggerValue` is chosen to violate it.
 
@@ -83,10 +95,10 @@ During component initialization, `ComponentsInitializer.initializeComponent(...)
 
 ## Testing condition mapping
 
-`src/conditions.spec.js` verifies:
+`test/tests/conditions.spec.js` verifies:
 
 - Every condition item in the JSON maps to a runtime instance.
-- Trigger values are non-null and have expected types (string vs number).
+- Trigger values are non-null, with explicit checks for list-based strings and numeric conditions.
 - Condition items are attached to the relevant component controllers.
 
 ## Extending the system
@@ -95,4 +107,4 @@ To support a new `type` (value type) or operator:
 
 1. Add logic in the relevant condition class (or create a new one).
 2. Add the operator mapping in `ConditionMapper.CONDITION_MAP`.
-3. Add fixtures and a test in `src/conditions.spec.js`.
+3. Add fixtures and a test in `test/tests/conditions.spec.js`.
