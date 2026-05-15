@@ -14,14 +14,14 @@ The core idea is:
 - `playwright.config.js`
 
   - Sets Playwright configuration (test directory, reporter, trace, browser project).
-  - Computes `baseURL` from environment configuration.
+  - Computes `baseURL` from `config.FORMS_RUNNER_URL`.
 
-- `src/config.js`
+- `test/config.js`
 
   - Loads `.env` via `dotenv`.
   - Validates and normalizes environment variables using `joi`.
 
-- `src/helpers/components-mapper.js`
+- `test/helpers/components-mapper.js`
 
   - Central mapping layer that connects JSON → runtime objects.
   - Exposes:
@@ -29,25 +29,27 @@ The core idea is:
     - `ComponentsInitializer.initializeComponent(...)`: instantiates controllers and attaches lists/conditions
     - `ConditionMapper`: operator → condition class + helpers to build condition instances
 
-- `src/controllers/*`
+- `test/controllers/*`
 
   - One controller per component type. Each controller encapsulates locators + fill/assert logic.
   - All controllers generally follow the same contract: `find()`, `assertions(expect)`, `fill(value)`.
 
-- `src/conditions/*`
+- `test/conditions/*`
 
-  - `src/conditions/conditions.js`: condition classes implementing `triggerValue` and `nonTriggerValue`.
-  - `src/conditions/index.js`: public exports and helpers that proxy to `ConditionMapper`.
+  - Individual condition classes live in files such as `test/conditions/is-condition.js` and `test/conditions/is-more-than-condition.js`.
+  - `test/conditions/index.js`: public exports and helpers that proxy to `ConditionMapper`.
+  - `test/conditions/relative-date-utils.js`: helpers for relative-date conditions and `DatePartsField` values.
 
-- `src/*.spec.js`
+- `test/tests/*.spec.js`
   - Playwright tests.
-  - `src/form.spec.js`: a traversal-style test driven by a full form JSON.
-  - `src/conditions.spec.js`: validates that conditions map correctly and attach to components.
+  - `test/tests/form.spec.js`: a traversal-style test driven by a checked-in form JSON fixture.
+  - `test/tests/live-form-manager.spec.js`: a traversal-style test that loads live/draft/test forms from Forms Manager via configured IDs.
+  - `test/tests/conditions.spec.js`: validates that conditions map correctly and attach to components.
 
 ## Data flow
 
 ```text
-Form JSON (src/data/*.json)
+Form JSON (test/data/*.json)
   ├─ pages[].components[]  ──────────────┐
   │                                      │
   │                                      ▼
@@ -73,15 +75,15 @@ Form JSON (src/data/*.json)
 
 ### Add support for a new component type
 
-1. Create a controller in `src/controllers/` (example pattern: `src/controllers/text-field-controller.js`).
-2. Export it from `src/controllers/index.js`.
-3. Map the JSON `type` to the controller in `src/helpers/components-mapper.js` (`componentsMapper`).
+1. Create a controller in `test/controllers/` (example pattern: `test/controllers/text-field-controller.js`).
+2. Export it from `test/controllers/index.js`.
+3. Map the JSON `type` to the controller in `test/helpers/components-mapper.js` (`componentsMapper`).
 
 ### Add support for a new condition operator
 
-1. Implement a condition class in `src/conditions/conditions.js`.
-2. Add an operator mapping in `ConditionMapper.CONDITION_MAP` in `src/helpers/components-mapper.js`.
-3. Add or extend tests in `src/conditions.spec.js`.
+1. Implement a condition class in a new file under `test/conditions/` (for example `test/conditions/is-equals-condition.js`).
+2. Add an operator mapping in `ConditionMapper.CONDITION_MAP` in `test/helpers/components-mapper.js`.
+3. Add or extend tests in `test/tests/conditions.spec.js`.
 
 ## Design decisions
 

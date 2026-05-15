@@ -10,7 +10,7 @@ A controller is responsible for:
 
 ## Base classes
 
-Base classes live in `src/controllers/base-field-controller.js`:
+Base classes live in `test/controllers/base-field-controller.js`:
 
 - `BaseFieldController`
 
@@ -40,11 +40,11 @@ Controllers typically implement some or all of:
 
 The authoritative mapping of form JSON component `type` → controller class is in:
 
-- `src/helpers/components-mapper.js` (`componentsMapper`)
+- `test/helpers/components-mapper.js` (`componentsMapper`)
 
 Controllers are exported from:
 
-- `src/controllers/index.js`
+- `test/controllers/index.js`
 
 ## Lists
 
@@ -55,7 +55,7 @@ When `componentDefinition.list` is present:
 - `ComponentsInitializer.initializeComponent(...)` looks up the list in the form definition.
 - It builds a `ListController` and sets `component.list`.
 
-`ListController` (in `src/controllers/list-controller.js`) provides helpers such as:
+`ListController` (in `test/controllers/list-controller.js`) provides helpers such as:
 
 - `getFirstItem()`, `getAllTexts()`, `findItemByText()`
 
@@ -65,20 +65,20 @@ Controllers can use these helpers to choose a sensible default value when a test
 
 ### TextField
 
-- File: `src/controllers/text-field-controller.js`
+- File: `test/controllers/text-field-controller.js`
 - Special behavior: supports regex-driven value generation.
   - If `schema.regex` is present on the component definition, it generates a matching value via `randexp`.
 
 ### SelectField
 
-- File: `src/controllers/select-field-controller.js`
+- File: `test/controllers/select-field-controller.js`
 - Locator strategy: `getByRole('combobox', { name: title })`
 - Fill behavior:
   - Uses an explicit `value` (label text), otherwise falls back to `list.getFirstItem().text`.
 
 ### FileUploadField
 
-- File: `src/controllers/file-upload-field-controller.js`
+- File: `test/controllers/file-upload-field-controller.js`
 - Upload strategy:
   - Generates an in-memory file buffer and sets it with `locator.setInputFiles(...)`.
   - Clicks an "Upload file" button and waits for an upload confirmation message.
@@ -98,14 +98,9 @@ This makes it possible to write tests like:
 
 ## Pages
 
-There is an early/placeholder `src/pages/` folder. At the moment:
+The `test/pages/` folder is currently empty. Most navigation logic today lives directly in `test/tests/form.spec.js`.
 
-- `src/pages/form-page.js` defines a minimal `DefaultPage` container.
-- `src/pages/repeat-page.js` and `src/pages/summary-page.js` are currently empty.
-
-Most navigation logic today lives directly in `src/form.spec.js`.
-
-If you want to evolve toward a full page-object architecture, `src/pages/` is the natural place to put:
+If you want to evolve toward a full page-object architecture, `test/pages/` is the natural place to put:
 
 - Page-level locators (Continue/Back/Add another)
 - Page-level assertions (heading present, error summary, etc.)
