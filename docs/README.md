@@ -11,7 +11,6 @@ This folder contains project documentation for the `forms-runner-acceptance-test
 - [Test Runner Flow](test-runner-flow.md) — How the different suites are executed
 - [Components & Controllers](components-and-controllers.md) — Controller pattern and registry
 - [Conditions System](conditions.md) — Condition mapping and trigger/non-trigger values
-- [**Verification Report**](VERIFICATION-REPORT.md) — Audit notes for documentation accuracy
 
 ## Quick Orientation
 
@@ -29,4 +28,3 @@ This folder contains project documentation for the `forms-runner-acceptance-test
 3. **Adding or changing behaviour?** Use the [How To Guides](HOWTO.md).
 4. **Writing maintainable tests?** Read [Best Practices](BEST-PRACTICES.md).
 5. **Something failing mysteriously?** Check [Troubleshooting Guide](TROUBLESHOOTING.md).
-6. **Want the audit trail?** See the [Verification Report](VERIFICATION-REPORT.md).
