@@ -45,17 +45,18 @@ export class FileUploadFieldController extends BaseFieldController {
    * @returns {Locator} File input locator.
    */
   find() {
-    // Workaround for GDS file input component - ensure element is visible so its value can be set
-    const fileInput = this.page
-      .locator(`input[type="file"][id="${this.name}"]`)
-      .first()
-    if (!fileInput.isVisible) {
-      fileInput.evaluate(
-        `element => element.style.setProperty('display', 'block' , 'important')`
-      )
-    }
     // File inputs in GOV.UK forms typically use id attribute
     return this.page.locator(`input[type="file"][id="${this.name}"]`)
+  }
+
+  /**
+   * Workaround for GDS file input component - ensure element is visible so its value can be set
+   */
+  async unhideFileInput() {
+    const fileInput = this.page.locator(`input[type="file"][id="${this.name}"]`)
+    await fileInput.evaluate(
+      `element => element.style.setProperty('display', 'block' , 'important')`
+    )
   }
 
   /**
@@ -88,6 +89,7 @@ export class FileUploadFieldController extends BaseFieldController {
       fileExtensionMap.find(([_ext, type]) => type === mimeType)?.[0] || 'txt'
     const fileName = `test-file.${extension}`
     const file = createFile(fileName)
+    await this.unhideFileInput()
     await this.find().setInputFiles(file)
     return this
   }
@@ -127,6 +129,7 @@ export class FileUploadFieldController extends BaseFieldController {
     const file1 = createFile(fileName)
     const file2 = createFile(`second-${fileName}`)
     const files = [file1, file2]
+    await this.unhideFileInput()
     await this.find().setInputFiles(files)
     return this
   }
@@ -151,6 +154,7 @@ export class FileUploadFieldController extends BaseFieldController {
    * @returns {Promise<FileUploadFieldController>} The controller instance for chaining.
    */
   async clear() {
+    await this.unhideFileInput()
     await this.find().setInputFiles([])
     return this
   }
