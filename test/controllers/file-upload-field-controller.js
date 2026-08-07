@@ -45,6 +45,15 @@ export class FileUploadFieldController extends BaseFieldController {
    * @returns {Locator} File input locator.
    */
   find() {
+    // Workaround for GDS file input component - ensure element is visible so its value can be set
+    const fileInput = this.page
+      .locator(`input[type="file"][id="${this.name}"]`)
+      .first()
+    if (!fileInput.isVisible) {
+      fileInput.evaluate(
+        `element => element.style.setProperty('display', 'block' , 'important')`
+      )
+    }
     // File inputs in GOV.UK forms typically use id attribute
     return this.page.locator(`input[type="file"][id="${this.name}"]`)
   }
