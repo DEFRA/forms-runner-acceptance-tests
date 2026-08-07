@@ -1,5 +1,3 @@
-import { expect } from '@playwright/test'
-
 import { BaseFieldController } from './base-field-controller.js'
 const MimeTypeMap = {
   pdf: 'application/pdf',
@@ -45,18 +43,16 @@ export class FileUploadFieldController extends BaseFieldController {
    * @returns {Locator} File input locator.
    */
   find() {
-    // File inputs in GOV.UK forms typically use id attribute
-    return this.page.locator(`input[type="file"][id="${this.name}"]`)
+    return this.page.locator('[name="file"]')
   }
 
   /**
    * Workaround for GDS file input component - ensure element is visible so its value can be set
    */
   async unhideFileInput() {
-    const fileInput = this.page.locator(`input[type="file"][id="${this.name}"]`)
-    await fileInput.evaluate(
-      `element => element.style.setProperty('display', 'block' , 'important')`
-    )
+    await this.page
+      .locator('[name="file"]')
+      .evaluate(`element => element.style.setProperty('display', 'block')`)
   }
 
   /**
@@ -91,31 +87,8 @@ export class FileUploadFieldController extends BaseFieldController {
     const file = createFile(fileName)
     await this.unhideFileInput()
     await this.find().setInputFiles(file)
-    return this
-  }
-
-  async clickUploadButton() {
-    const uploadButton = this.page.getByRole('button', {
-      name: /upload file/i
-    })
-    await uploadButton.click()
-    // wait for upload to complete if necessary
-    await expect
-      .poll(
-        async () => {
-          const count = await this.page
-            .getByText('1 file uploaded', { exact: true })
-            .count()
-          return count > 0
-        },
-        {
-          timeout: 15000,
-          interval: 1000,
-          message: 'Waiting for file to be uploaded'
-        }
-      )
-      .toBe(true)
-    await this.page.waitForLoadState('networkidle')
+    await this.page.getByText('1 file uploaded', { exact: true }).isVisible()
+    await this.page.waitForTimeout(1000)
     return this
   }
 
@@ -131,6 +104,10 @@ export class FileUploadFieldController extends BaseFieldController {
     const files = [file1, file2]
     await this.unhideFileInput()
     await this.find().setInputFiles(files)
+    await this.page
+      .getByText(`${files.length} files uploaded`, { exact: true })
+      .isVisible()
+    await this.page.waitForTimeout(1000)
     return this
   }
 
@@ -145,7 +122,6 @@ export class FileUploadFieldController extends BaseFieldController {
     } else {
       await this.uploadFile(value)
     }
-    await this.clickUploadButton()
     return this
   }
 

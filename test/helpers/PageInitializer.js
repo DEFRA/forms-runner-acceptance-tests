@@ -58,7 +58,6 @@ export async function fillInitializedComponents(
     }
     if (component.type === 'FileUploadField') {
       await component.uploadFile()
-      await component.clickUploadButton()
       continue
     }
 

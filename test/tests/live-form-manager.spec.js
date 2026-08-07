@@ -172,7 +172,6 @@ async function fillComponents(initializedComponents) {
   for (const component of initializedComponents) {
     if (component.type === 'FileUploadField') {
       await component.uploadFile()
-      await component.clickUploadButton()
       continue
     }
 
