@@ -70,7 +70,7 @@ export class FileUploadFieldController extends BaseFieldController {
   async assertions(expect) {
     const element = this.find()
     await expect(element).toBeAttached()
-    return this.page.locator
+    return this
   }
 
   /**
