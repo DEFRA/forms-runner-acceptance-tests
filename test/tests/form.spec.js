@@ -233,7 +233,6 @@ test.describe(`${formName} fill tests`, () => {
         if (component.type === 'FileUploadField') {
           // Handle file upload separately - controller creates a file on the fly
           await component.uploadFile()
-          await component.clickUploadButton()
         } else if (component.type === 'RadiosField') {
           await component.selectFirstOption()
         } else if (component.type === 'YesNoField') {
