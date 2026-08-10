@@ -33,7 +33,7 @@
     "report:publish": "./bin/publish-tests.sh"
   },
   "dependencies": {
-    "@defra/forms-model": "^3.0.637",
+    "@defra/forms-model": "^3.0.693",
     "dotenv": "^17.2.3",
     "joi": "^17.0.0",
     "prettier": "^3.7.4",
