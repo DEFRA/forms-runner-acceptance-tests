@@ -160,10 +160,19 @@ export class GeospatialFieldController extends BaseFieldController {
    * @param {string} suffix Button id suffix.
    * @returns {Promise<GeospatialFieldController>} Controller instance.
    */
+  async verifyMapButton(suffix) {
+    const button = await this.findMapButton(suffix)
+    await expect(button).toBeVisible()
+    return this
+  }
+
+  /**
+   * @param {string} suffix Button id suffix.
+   * @returns {Promise<GeospatialFieldController>} Controller instance.
+   */
   async openMapTool(suffix) {
     await expect(this.findMapCanvas()).toBeVisible()
-    await this.page.waitForTimeout(1000)
-    await this.clickMapButton(suffix)
+    await this.waitForMapButton(suffix)
     await this.page.waitForTimeout(200)
     return this
   }
@@ -200,7 +209,7 @@ export class GeospatialFieldController extends BaseFieldController {
     await this.closeMapHelpOverlay()
 
     for (const suffix of mapToolSuffixes) {
-      await this.openMapTool(suffix)
+      await this.verifyMapButton(suffix)
     }
 
     await this.seedFeatures(features)
