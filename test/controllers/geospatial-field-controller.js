@@ -162,6 +162,7 @@ export class GeospatialFieldController extends BaseFieldController {
    */
   async openMapTool(suffix) {
     await expect(this.findMapCanvas()).toBeVisible()
+    await this.page.waitForTimeout(1000)
     await this.clickMapButton(suffix)
     await this.page.waitForTimeout(200)
     return this
