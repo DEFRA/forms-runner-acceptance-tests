@@ -20,7 +20,7 @@ The suite is currently built around three main test styles:
   - `use.video: 'retain-on-failure'` — videos collected only on test failure
   - Top-level `retries`: `1` in CI, `0` locally
   - The `chromium` project currently overrides retries to `1`
-  - Projects: only `chromium` (Desktop Chrome device profile, 1920x1080)
+  - Projects: `chromium` (Desktop Chrome device profile, 1920x1080), plus `visual-setup`, `visual-desktop` and `visual-mobile` for the visual regression checks (see [HOWTO](HOWTO.md#how-to-run-the-visual-regression-checks))
 
 ## `form.spec.js`: traversal-style test
 

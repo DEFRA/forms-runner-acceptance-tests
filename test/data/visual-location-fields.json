@@ -1,0 +1,107 @@
+{
+  "name": "Automated test - Visual regression location fields",
+  "engine": "V2",
+  "schema": 2,
+  "startPage": "/summary",
+  "pages": [
+    {
+      "id": "9c850ad3-5ec1-40a3-8f07-d66974d64919",
+      "path": "/easting-northing-and-lat-long",
+      "title": "Easting and northing and latitude and longitude",
+      "components": [
+        {
+          "id": "edacddd4-4640-4872-8680-b6b5b7696e89",
+          "type": "EastingNorthingField",
+          "title": "Where is the site",
+          "name": "siteEastingNorthing",
+          "hint": "For example. Easting: 248741, Northing: 63688",
+          "shortDescription": "Where is the site",
+          "options": {
+            "required": true
+          },
+          "schema": {}
+        },
+        {
+          "id": "a7d56d14-bc56-43c5-beb9-e91ad94d90d2",
+          "type": "LatLongField",
+          "title": "Where is the barn",
+          "name": "barnLatLong",
+          "shortDescription": "Where is the barn",
+          "options": {
+            "required": true
+          },
+          "schema": {}
+        }
+      ],
+      "next": []
+    },
+    {
+      "id": "38e37c27-fcd5-402d-b0b6-c90aa763afe6",
+      "path": "/os-grid-reference",
+      "title": "",
+      "components": [
+        {
+          "id": "c4c6cb38-cd26-4d3b-8a74-88a14b8a177e",
+          "type": "OsGridRefField",
+          "title": "What is the OS grid reference of the pond",
+          "name": "pondGridRef",
+          "shortDescription": "What is the OS grid reference of the pond",
+          "options": {
+            "required": true
+          },
+          "schema": {}
+        }
+      ],
+      "next": []
+    },
+    {
+      "id": "84bf295d-1091-497e-a90d-ddb3432b486b",
+      "path": "/national-grid-field-number",
+      "title": "",
+      "components": [
+        {
+          "id": "3a728e14-3dfc-4eb8-98ad-9134c4e37ca4",
+          "type": "NationalGridFieldNumberField",
+          "title": "What is the field number",
+          "name": "fieldNumber",
+          "shortDescription": "What is the field number",
+          "options": {
+            "required": true
+          },
+          "schema": {}
+        }
+      ],
+      "next": []
+    },
+    {
+      "id": "7bd3ac84-192e-40ff-a66d-98c3c3b24001",
+      "path": "/geospatial",
+      "title": "",
+      "components": [
+        {
+          "id": "f9ebfd9e-6873-461a-9cc7-75adab868ea9",
+          "type": "GeospatialField",
+          "title": "Add all the barn locations",
+          "name": "barnLocations",
+          "hint": "You can add points, shapes or lines to the map.",
+          "shortDescription": "Add all the barn locations",
+          "options": {
+            "required": true
+          },
+          "schema": {}
+        }
+      ],
+      "next": []
+    },
+    {
+      "id": "4e06a66b-486e-484e-819c-770c0a49c1da",
+      "path": "/summary",
+      "title": "",
+      "controller": "SummaryPageWithConfirmationEmailController",
+      "next": []
+    }
+  ],
+  "conditions": [],
+  "sections": [],
+  "lists": []
+}
