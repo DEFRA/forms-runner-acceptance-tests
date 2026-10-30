@@ -1,0 +1,41 @@
+{
+  "form": "visual-location-fields.json",
+  "targets": [
+    {
+      "name": "easting-northing-and-lat-long",
+      "page": "/easting-northing-and-lat-long",
+      "query": "map_0:center=-2.2873976,53.9970538&map_0:zoom=16&map_1:center=-2.3285912,54.1099172&map_1:zoom=16",
+      "states": ["empty", "errors", "filled"],
+      "fill": {
+        "#siteEastingNorthing__easting": "437786",
+        "#siteEastingNorthing__northing": "461733",
+        "#barnLatLong__latitude": "54.1099",
+        "#barnLatLong__longitude": "-2.3286"
+      }
+    },
+    {
+      "name": "os-grid-reference",
+      "page": "/os-grid-reference",
+      "query": "map_0:center=-1.7876,51.1789&map_0:zoom=16",
+      "states": ["empty", "errors", "filled"],
+      "fill": {
+        "#pondGridRef": "SU123456"
+      }
+    },
+    {
+      "name": "national-grid-field-number",
+      "page": "/national-grid-field-number",
+      "query": "map_0:center=-1.7876,51.1789&map_0:zoom=16",
+      "states": ["empty", "errors", "filled"],
+      "fill": {
+        "#fieldNumber": "NG1234 5678"
+      }
+    },
+    {
+      "name": "geospatial",
+      "page": "/geospatial",
+      "query": "geospatialmap_0:center=-1.7876,51.1789&geospatialmap_0:zoom=16",
+      "states": ["empty", "errors"]
+    }
+  ]
+}

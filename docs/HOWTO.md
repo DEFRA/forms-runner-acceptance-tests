@@ -1013,3 +1013,42 @@ get nonTriggerValue
 - [Components & Controllers](components-and-controllers.md)
 - [Conditions System](conditions.md)
 - [Test Runner Flow](test-runner-flow.md)
+
+---
+
+## How to Run the Visual Regression Checks
+
+The visual checks compare the `<main>` content of form pages against baseline screenshots in `test/__screenshots__/`.
+
+- **Form:** `test/data/visual-location-fields.json`. Before the checks run, the `visual-setup` project (`test/tests/visual.setup.js`) creates this form in forms-manager, or updates it, and saves the checked-in definition as its draft. The checks then preview `/form/preview/draft/<slug>/...`, so they don't depend on forms that already exist in an environment.
+- **Pages and states:** `test/data/visual-targets.json`. Each target lists a page, the map view (`map_N:center` / `map_N:zoom`), the states to capture (`empty`, `errors`, `filled`) and the values to type for `filled`. The runner redirects to the first unanswered page, so the checks answer the earlier targets' pages first.
+- **Maps:** the map canvas is masked, because OS tiles are live data, or fail locally when there's no OS API key. The fields, errors, controls and buttons are still compared.
+- **Viewports:** `visual-desktop` (1280×800) and `visual-mobile` (Pixel 7).
+
+### Prerequisites
+
+The local harness has to be running: forms-runner on `:3009`, forms-manager on `:3001` and the OIDC mock on `:5556`. Copy the `FORMS_RUNNER_URL`, `FORMS_MANAGER_URL` and `OIDC_*` values from `.env.sample` into `.env`.
+
+### Run
+
+Baselines depend on the OS and fonts, so always run the checks in the pinned Playwright image:
+
+```bash
+npm run test:visual:docker
+```
+
+`test:visual:docker` points the container at the harness through `host.docker.internal`.
+
+### Update baselines after an intended change
+
+```bash
+npm run test:visual:docker -- --update-snapshots
+```
+
+Commit the changed PNGs. Reviewers see the before and after images in the PR diff. When a check fails, `npx playwright show-report` shows the expected, actual and diff images.
+
+### Add a page
+
+1. Add the question to `test/data/visual-location-fields.json`, or add another form and point `form` in `visual-targets.json` at it.
+2. Add a target to `visual-targets.json`.
+3. Run the update command above and check the new PNGs before committing them.

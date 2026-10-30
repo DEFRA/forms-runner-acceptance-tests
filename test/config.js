@@ -25,7 +25,12 @@ export const configSchema = joi
     GOVPAY_TEST_BILLING_CITY: joi.string().required(),
     GOVPAY_TEST_BILLING_POSTCODE: joi.string().required(),
     GOVPAY_TEST_EMAIL: joi.string().email().required(),
-    FORMS_RUNNER_URL: joi.string().uri().allow('').optional().default('')
+    FORMS_RUNNER_URL: joi.string().uri().allow('').optional().default(''),
+    OIDC_TOKEN_URL: joi.string().uri().allow('').optional().default(''),
+    OIDC_CLIENT_ID: joi.string().allow('').optional().default(''),
+    OIDC_CLIENT_SECRET: joi.string().allow('').optional().default(''),
+    OIDC_USERNAME: joi.string().allow('').optional().default(''),
+    OIDC_PASSWORD: joi.string().allow('').optional().default('')
   })
   .prefs({ convert: true, abortEarly: false })
 
@@ -47,6 +52,11 @@ export const configSchema = joi
  *  @property {string} GOVPAY_TEST_BILLING_POSTCODE GOV.UK Pay billing postcode.
  *  @property {string} GOVPAY_TEST_EMAIL GOV.UK Pay confirmation email.
  *  @property {string} FORMS_RUNNER_URL Forms Runner base URL.
+ *  @property {string} OIDC_TOKEN_URL OIDC token endpoint used to get a forms-manager token.
+ *  @property {string} OIDC_CLIENT_ID OIDC client id.
+ *  @property {string} OIDC_CLIENT_SECRET OIDC client secret.
+ *  @property {string} OIDC_USERNAME OIDC test user that can create forms.
+ *  @property {string} OIDC_PASSWORD OIDC test user password.
  */
 /**
  * @type {config}
@@ -69,7 +79,12 @@ export const config = joi.attempt(
     GOVPAY_TEST_BILLING_CITY: process.env.GOVPAY_TEST_BILLING_CITY,
     GOVPAY_TEST_BILLING_POSTCODE: process.env.GOVPAY_TEST_BILLING_POSTCODE,
     GOVPAY_TEST_EMAIL: process.env.GOVPAY_TEST_EMAIL,
-    FORMS_RUNNER_URL: process.env.FORMS_RUNNER_URL
+    FORMS_RUNNER_URL: process.env.FORMS_RUNNER_URL,
+    OIDC_TOKEN_URL: process.env.OIDC_TOKEN_URL,
+    OIDC_CLIENT_ID: process.env.OIDC_CLIENT_ID,
+    OIDC_CLIENT_SECRET: process.env.OIDC_CLIENT_SECRET,
+    OIDC_USERNAME: process.env.OIDC_USERNAME,
+    OIDC_PASSWORD: process.env.OIDC_PASSWORD
   },
   configSchema
 )
